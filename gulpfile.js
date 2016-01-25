@@ -26,7 +26,6 @@ gulp.task('html', function() {
     gulp.src(htmlSrc)
         .pipe(gulp.dest(htmlDst))
         .pipe(reload({stream: true}));
-        // .pipe(livereload());
 });
 
 // 样式处理
@@ -64,6 +63,10 @@ gulp.task('js', function() {
         appSrc = './src/js/vendor/*.js',
         appDst = './dist/js/vendor/';
 
+        libSrc = './src/js/libs/*.js',
+        libDst = './dist/js/libs/';
+
+
     gulp.src(mainSrc)
         .pipe(jshint(require('./jshintConf')))
         .pipe(jshint.reporter('default'))
@@ -83,11 +86,17 @@ gulp.task('js', function() {
         // .pipe(concat("vendor.js"))
         .pipe(gulp.dest(appDst))
         .pipe(reload({stream: true}));
+
+    gulp.src(libSrc)
+        .pipe(uglify())
+        // .pipe(concat("vendor.js"))
+        .pipe(gulp.dest(libDst))
+        .pipe(reload({stream: true}));
 });
 
 // 清空图片、样式、js
 gulp.task('clean', function() {
-    gulp.src(['./dist/css', './dist/js/*.js', './dist/js/vendor', './dist/images'], {
+    gulp.src(['./dist/css', './dist/js', './dist/images'], {
             read: false
         })
         .pipe(clean());
@@ -106,22 +115,6 @@ gulp.task('serve-sync', function() {
         }
     });
 });
-
-//监控文件修改，重启node服务
-// gulp.task('serve', function (cb) {
-//     nodemon({
-//         script  : <server start file>,
-//         watch   : <server files>
-//         //...add nodeArgs: ['--debug=5858'] to debug 
-//         //..or nodeArgs: ['--debug-brk=5858'] to debug at server start
-//     }).on('start', function () {
-//         setTimeout(function () {
-//             livereload.changed();
-//         }, 2000); // wait for the server to finish loading before restarting the browsers
-//     }).on('restart', function() {
-//         console.log(restart)
-//     });
-// });
 
 // 监听任务 运行语句 gulp watch
 gulp.task('watch', function() {
